@@ -1,0 +1,31 @@
+# Use this cell to begin your analysis, and add as many as you would like!
+
+#import packages
+import requests
+from bs4 import BeautifulSoup
+
+#specify url : url
+url = 'https://www.gutenberg.org/files/16/16-h/16-h.htm'
+#package the request, send the request and catch the response: r
+r = requests.get(url)
+ 
+#extract the response as html: html_doc
+html_doc = r.text
+
+#Create BeautifulSoup object from the HTML: soup
+soup = BeautifulSoup(html_doc)
+
+print(soup.get_text())
+
+import nltk
+sentences = sent_tokenize(soup)
+token_sentences = [word_tokenize(sent) for sent in sentences]
+pos_sentences = [nltk.pos_tag(sent) for sent in token_sentences] 
+chunked_sentences = nltk.ne_chunk_sents(pos_sentences, binary= True)
+for sent in chunked_sentences:
+    for chunk in sent:
+        if hasattr(chunk, "label") and chunk.label() == "NE":
+            print(chunk)
+            
+#creating the protagonist list
+protagonists = []
